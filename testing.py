@@ -100,7 +100,7 @@ def l2_sim():
             if drone.touch_time > 5:
                 drone.completed += 1
                 drone.touch_time = 0
-        elif dist > 50:
+        elif dist > 100:
             drone.crash = True
             drone.done = True
             print('crash')
@@ -173,7 +173,7 @@ def l3_sim():
         if drone.done:
             return
 
-        if np.linalg.norm(drone.pos - target) > 50:
+        if np.linalg.norm(drone.pos - target) > 100:
             drone.crash = True
             drone.done = True
             print('crash')
@@ -272,6 +272,7 @@ def draw_nn():
             ypos = HEIGHT + (width / (layer_amt + 1)) * (ix + 1) - width
 
             # Draw weight lines:
+            intesity = 10
             if i < len(shape) - 1:
                 xpos2 = gap * (i + 2) - (gap-30)
                 for jx in range(shape[i + 1]):
@@ -281,21 +282,19 @@ def draw_nn():
                     activation = drone.brain.weight_activations[i][jx, ix]
                     weights = drone.brain.layers[i].weights
                     line_size = np.abs(weights[jx, ix]) * 3 / np.abs(weights[jx, ix]).max()
-                    # sign = 1 if activation >= 0 else -1
-                    # activation = sign * np.square(activation)
                     if activation >= 0:
-                        color = (0, 255*activation, 0)
+                        color = (intesity, (255-intesity)*activation+intesity, intesity)
                     else:
-                        color = (255*-activation, 0, 0)
+                        color = ((255-intesity)*-activation+intesity, intesity, intesity)
 
                     pg.draw.line(screen, color, [xpos, ypos], [xpos2, ypos2], width=int(line_size))
 
             # Draw Node activations
             activation = drone.brain.node_activations[i][ix, 0]
             if activation >= 0:
-                color = (255*(1-activation), 255, 255*(1-activation))
+                color = (intesity, (255 - intesity) * activation + intesity, intesity)
             else:
-                color = (255, 255*(1+activation), 255*(1+activation))
+                color = ((255 - intesity) * -activation + intesity, intesity, intesity)
 
             pg.draw.circle(screen, color, (xpos, ypos), 5)
 
