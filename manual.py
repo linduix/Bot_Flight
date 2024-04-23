@@ -1,4 +1,4 @@
-from dronev1 import Drone, AiDrone
+from Drones.manualDrone import Drone
 import numpy as np
 import pygame as pg
 import sys
