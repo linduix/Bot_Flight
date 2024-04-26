@@ -1,8 +1,9 @@
 import numpy as np
 from Drones.droneV1 import AiDrone
 
-WIDTH, HEIGHT = 800, 600
+WIDTH, HEIGHT = 1600, 900
 WORLDSCALE = 20
+MAX_DIST = np.sqrt(np.square(np.array([WIDTH, HEIGHT])/WORLDSCALE).sum())
 TARGETS = 15
 
 
@@ -25,7 +26,7 @@ def _score(drone: AiDrone, target: _Target, dt):
 
             drone.completed += 1
             drone.completion_time = 0
-    elif distance > 50:
+    elif distance > MAX_DIST:
         drone.crash = True
         drone.done = True
     else:
@@ -151,6 +152,7 @@ def run_level_pg(drones: list[AiDrone], SCREEN):
             pg.draw.rect(DRONE_SPRITE, (255 * drone.thrust_output, 255 * (1 - drone.thrust_output), 50), [1, 1, 18, 18])
             pg.draw.circle(DRONE_SPRITE, 'red', (10, 2), 2)
             rotated_sprite = pg.transform.rotate(DRONE_SPRITE, np.degrees(drone.angle))
+            rotated_sprite.set_colorkey((0, 0, 0))
             sprite_rect = rotated_sprite.get_rect(center=center)
             SCREEN.blit(rotated_sprite, sprite_rect)
 

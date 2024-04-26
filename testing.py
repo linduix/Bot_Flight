@@ -23,7 +23,7 @@ with open(path, 'r') as f:
     data = json.load(f)
     best_genome = data['best']
 
-drone = AiDrone([20, 15], genome=best_genome)
+drone = AiDrone([WIDTH/(WORLDSCALE * 2), HEIGHT/(WORLDSCALE * 2)], genome=best_genome)
 
 drone_sprite = pg.Surface([20, 20])
 drone_sprite.fill('black')
@@ -263,8 +263,8 @@ def manual_sim():
 
 def draw_nn():
     shape = drone.brain.shape
-    width = 200
-    gap = 80
+    width = 250
+    gap = 100
 
     for i, layer_amt in enumerate(shape):
         xpos = gap * (i+1) - (gap-30)
@@ -281,7 +281,7 @@ def draw_nn():
 
                     activation = drone.brain.weight_activations[i][jx, ix]
                     weights = drone.brain.layers[i].weights
-                    line_size = np.abs(weights[jx, ix]) * 3 / np.abs(weights[jx, ix]).max()
+                    line_size = np.abs(weights[jx, ix]) * 4 / np.abs(weights[jx, ix]).max()
                     if activation >= 0:
                         color = (intesity, (255-intesity)*activation+intesity, intesity)
                     else:
@@ -296,7 +296,7 @@ def draw_nn():
             else:
                 color = ((255 - intesity) * -activation + intesity, intesity, intesity)
 
-            pg.draw.circle(screen, color, (xpos, ypos), 5)
+            pg.draw.circle(screen, color, (xpos, ypos), 8)
 
 
 # manual_sim()

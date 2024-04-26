@@ -81,7 +81,7 @@ class AiDrone(object):
         self.old_pos = self.pos.copy()
 
     def reset(self):
-        self.pos: np.ndarray = np.array([20., 15.])
+        self.pos: np.ndarray = self.startpos
         self.angle: float = 0
 
         self.angle_output: float = 0

@@ -1,20 +1,22 @@
 import numpy as np
 from Drones.droneV1 import AiDrone
 
-WIDTH, HEIGHT = 800, 600
+WIDTH, HEIGHT = 1600, 900
 WORLDSCALE = 20
+MAX_DIST = np.sqrt(np.square((2*max(WIDTH, HEIGHT))/WORLDSCALE).sum())
 TARGETS = 15
 
 
 class _Target(object):
     def __init__(self, yaxis: bool, border: int):
         border = np.clip(border, 0, 1)  # one axis will be on the border
+        dist = max(WIDTH, HEIGHT)
         ratio = np.random.random()  # other axis will be random postion
 
         if yaxis:
-            self.pos = np.array([(WIDTH//WORLDSCALE)*ratio, (HEIGHT//WORLDSCALE)*border])
+            self.pos = np.array([(dist//WORLDSCALE)*ratio, (dist//WORLDSCALE)*border])
         else:
-            self.pos = np.array([(WIDTH//WORLDSCALE)*border, (HEIGHT//WORLDSCALE)*ratio])
+            self.pos = np.array([(dist//WORLDSCALE)*border, (dist//WORLDSCALE)*ratio])
 
 
 def _score(drone: AiDrone, target: _Target, dt):
@@ -23,16 +25,17 @@ def _score(drone: AiDrone, target: _Target, dt):
     if distance < 0.2:
         drone.touch_time += dt
         if drone.touch_time > 1:
-            drone.score += 10*drone.completed / drone.completion_time  # points based on speed
+            drone.score += 10*drone.completed / (drone.completion_time+1)  # points based on speed
 
             drone.completed += 1
             drone.completion_time = 0
-    elif distance > 50:
+    elif distance > MAX_DIST:
         drone.crash = True
         drone.done = True
     else:
         drone.touch_time = 0  # reset touch timer if outside range
         drone.completion_time += dt
+
 
 def run_level(drones: list[AiDrone]):
     # time setup
@@ -150,6 +153,7 @@ def run_level_pg(drones: list[AiDrone], SCREEN):
             pg.draw.rect(DRONE_SPRITE, (255 * drone.thrust_output, 255 * (1 - drone.thrust_output), 50), [1, 1, 18, 18])
             pg.draw.circle(DRONE_SPRITE, 'red', (10, 2), 2)
             rotated_sprite = pg.transform.rotate(DRONE_SPRITE, np.degrees(drone.angle))
+            rotated_sprite.set_colorkey((0, 0, 0))
             sprite_rect = rotated_sprite.get_rect(center=center)
             SCREEN.blit(rotated_sprite, sprite_rect)
 

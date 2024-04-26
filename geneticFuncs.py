@@ -2,22 +2,9 @@ import random
 from Drones.droneV1 import AiDrone
 import numpy as np
 
-
-# def crossover(genome1: dict, genome2: dict) -> dict:
-#     child_genome = {'weight': {}, 'bias': {}}
-#     for chromosome in ['weight', 'bias']:
-#         for genes in ['fc1', 'fc2', 'fc3']:
-#             gene1 = genome1[chromosome][genes]
-#             gene2 = genome2[chromosome][genes]
-#
-#             # random crossover splitting
-#             ratio = np.random.rand()
-#
-#             # weighted sum
-#             child_gene = gene1*ratio + gene2*(1-ratio)
-#             child_genome[chromosome][genes] = child_gene
-#
-#     return child_genome
+# GLOBALS SETUP
+WIDTH, HEIGHT = 1600, 900
+WORLDSCALE = 20
 
 
 def crossover(genome1: dict, genome2:dict) -> dict:
@@ -113,7 +100,8 @@ def next_generation(drones: list[AiDrone], gen_size):
         child_genome: dict = mutate(crossed)
 
         # create and append the child
-        child = AiDrone([20, 15], genome=child_genome)
+        child = AiDrone([WIDTH/(WORLDSCALE * 2), HEIGHT/(WORLDSCALE * 2)],
+                        genome=child_genome)
         next_gen.append(child)
 
     for drone in next_gen:

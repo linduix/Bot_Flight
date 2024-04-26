@@ -16,7 +16,7 @@ class _layer(object):
         if type(inp) is not np.ndarray:
             raise TypeError('Input must be of type: Numpy ndarray')
         try:
-            return np.matmul(self.weights, inp) + self.bias
+            return np.dot(self.weights, inp) + self.bias
         except ValueError:
             print('Mismatched layer shape')
 
@@ -73,8 +73,8 @@ class neuralNet(object):
 
 
 if __name__ == '__main__':
-    layer = _layer(3, 2)
-    for l in layer.weights:
-        print(l)
+    arr1 = np.random.rand(3, 4)
+    arr2 = np.random.rand(1, 3)
 
-    print('\n', layer.weights)
+    print(np.matmul(arr2, arr1), '\n')
+    print(np.dot(arr1, arr2))

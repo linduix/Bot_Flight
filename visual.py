@@ -12,7 +12,7 @@ import sys
 pg.init()
 
 # GLOBALS SETUP
-WIDTH, HEIGHT = 800, 600
+WIDTH, HEIGHT = 1600, 900
 WORLDSCALE = 20
 SCREEN = pg.display.set_mode((WIDTH, HEIGHT))
 
@@ -25,14 +25,11 @@ LEVEL = 5
 LEVELS = [level1, level2, level3, level4, level5]
 RUN_LEVEL = LEVELS[LEVEL-1].run_level_pg
 # Shuffle mode
-SHUFFLE = True
+SHUFFLE = False
 
 # Training settings
 gen_size: int = 40          # Drones per generation
 gen_threshold: int = 5_000  # Total generations to train
-
-# Create drones
-drones: list[AiDrone] = [AiDrone([20, 15]) for _ in range(gen_size)]
 
 
 def load_data():
@@ -66,13 +63,15 @@ def load_data():
                 _starting_gen: int = _data['generation']  # set the starting generation if continuing training
 
             _all_drones: list = _data['all']
-            _drones: list = [AiDrone([20, 15], genome=genome) for genome in _all_drones]
+            _drones: list = [AiDrone([WIDTH/(WORLDSCALE * 2), HEIGHT/(WORLDSCALE * 2)], genome=genome)
+                             for genome in _all_drones]
 
     # Handle file not existing
     except FileNotFoundError:  # if no previous data found
         if LEVEL == 1 or SHUFFLE:  # create new if first level or shuffle mode
             print('\033[33mCreating Drones...\033[0m\n')
-            _drones: list[AiDrone] = [AiDrone([20, 15]) for _ in range(gen_size)]
+            _drones: list[AiDrone] = [AiDrone([WIDTH/(WORLDSCALE * 2), HEIGHT/(WORLDSCALE * 2)])
+                                      for _ in range(gen_size)]
         else:           # else exit program
             print('Previous Level Doesnt Exist')
             sys.exit()
@@ -82,7 +81,8 @@ def load_data():
         print('\033[91mData Corrupted:\033[0m')
         if LEVEL == 1:
             print('\033[33mCreating Drones...\033[0m\n')
-            _drones: list[AiDrone] = [AiDrone([20, 15]) for _ in range(gen_size)]
+            _drones: list[AiDrone] = [AiDrone([WIDTH/(WORLDSCALE * 2), HEIGHT/(WORLDSCALE * 2)])
+                                      for _ in range(gen_size)]
         else:
             print(e)
             print(f'\033[91m->\033[0m {path}')
@@ -130,7 +130,7 @@ if __name__ == '__main__':
 
             # Print results
             end_time = time.time()
-            if (gen == starting_gen + 1) or (end_time - start_time >= 20):
+            if (gen == starting_gen + 1) or (end_time - start_time >= 10):
                 print(f"Gen:  {gen:>4} | "
                       f"Score: {best_drone.score:0>6.2f} | "
                       f"{'[CRASH]' if best_drone.crash else '[ALIVE]':<7} {best_drone.survived:0>5.2f}s | "
